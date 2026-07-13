@@ -413,6 +413,99 @@ class _homeScreenState extends State<homeScreen> {
                   ],
                 ),
                 SizedBox(height: 10),
+                Stack(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/ytVid2');
+                      },
+                      child: Container(
+                        height: 220,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          image: DecorationImage(
+                            image: NetworkImage('https://i.ytimg.com/vi/hGSZPc9AA1g/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDpHu78vDwggSz9JzBcsqsJnxHeew'),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 195,
+                      right: 5,
+                      left: 340,
+                      bottom: 5,
+                      child: Container(
+                        height: 35,
+                        width: 55,
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(113, 0, 0, 0),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '25:00',
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        height: 50,
+                        width: 50,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          image: DecorationImage(
+                            image: NetworkImage('https://yt3.googleusercontent.com/q60WxbIPADm1HzayZM95uT8oQogHwHnizCQ6YlE-66oLs1LIBz5WeUeXAvoyZxDDFdioJhSs2HM=s160-c-k-c0x00ffffff-no-rj'),
+                            fit: BoxFit.cover,
+                          ),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    SingleChildScrollView(
+
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: Text(
+                              'SPIDER-MAN: BRAND NEW DAY - \nNew Trailer | Exclusively In Cinemas \n30 July | Book Tickets Now',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            "BoomChannel · 82K views · 6 months ago",
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Spacer(),
+                    Icon(Icons.more_vert, color: Colors.black, size: 30),
+                  ],
+                ),
+                SizedBox(height: 10),
               ],
             ),
           ],
