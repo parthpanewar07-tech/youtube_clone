@@ -304,16 +304,21 @@ class _homeScreenState extends State<homeScreen> {
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          height: 300,
-                          width: 162,
-                          margin: EdgeInsets.symmetric(vertical: 8),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.grey.shade300,
-                            image: DecorationImage(
-                              image: AssetImage(
-                                "assets/Short/Shorts${index + 1}.png",
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, '/ytShVid2');
+                          },
+                          child: Container(
+                            height: 300,
+                            width: 162,
+                            margin: EdgeInsets.symmetric(vertical: 8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.grey.shade300,
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  "assets/Short/Shorts${index + 1}.png",
+                                ),
                               ),
                             ),
                           ),

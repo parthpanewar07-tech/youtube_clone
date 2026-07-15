@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:youtube/screens/homeScreen.dart';
+import 'package:youtube/screens/shortPlayerScreen1.dart';
 import 'package:youtube/screens/videoPlayerScreen1.dart';
 import 'package:youtube/screens/videoPlayerScreen2.dart';
 
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => homeScreen(),
         '/ytVid1': (context) => const videoPlayerScreen1(),
         '/ytVid2': (context) => const videoPlayerScreen2(),
+        '/ytShVid2': (context) => const ShortPlayerScreen1(),
       },
     );
   }
