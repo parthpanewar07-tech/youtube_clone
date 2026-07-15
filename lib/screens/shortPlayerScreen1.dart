@@ -9,27 +9,27 @@ class ShortPlayerScreen1 extends StatefulWidget {
 }
 
 class _ShortPlayerScreen1State extends State<ShortPlayerScreen1> {
- late YoutubePlayerController _controller;
-
+  late YoutubePlayerController _controller;
+  String textValue = "Subscribe";
   bool isLiked = false;
-  bool isSubscribed = false;
 
   @override
   void initState() {
     super.initState();
 
-    final id = YoutubePlayer.convertUrlToId(
-      "https://youtube.com/shorts/tmxl0_3kn7g?si=dyWciHhYoeyAl6S3",
-    );
+    // Make sure the URL you pass here is actually a vertical video (Shorts format)
+    final videoId = YoutubePlayer.convertUrlToId(
+      "https://youtube.com/shorts/tmxl0_3kn7g?si=dyWciHhYoeyAl6S3", // Put your shorts URL here
+    ) ?? "05DrDxjMEbU"; // Fallback ID
 
     _controller = YoutubePlayerController(
-      initialVideoId: id!,
+      initialVideoId: videoId,
       flags: const YoutubePlayerFlags(
         autoPlay: true,
         mute: false,
         loop: true,
-        hideControls: true,
-        disableDragSeek: true,
+        hideControls: true, // CRITICAL: Hides default YT web controls
+        disableDragSeek: true, // Prevents accidental scrubbing 
       ),
     );
   }
@@ -40,28 +40,115 @@ class _ShortPlayerScreen1State extends State<ShortPlayerScreen1> {
     super.dispose();
   }
 
-  Widget sideButton(
-    IconData icon,
-    String title, {
-    VoidCallback? onTap,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 18),
-      child: InkWell(
-        onTap: onTap,
-        child: Column(
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black, // Shorts background is always black
+      body: SafeArea(
+        child: Stack(
           children: [
-            Icon(
-              icon,
-              color: Colors.white,
-              size: 34,
+            // 1. The Video Player Background
+            Positioned.fill(
+              child: FittedBox(
+                fit: BoxFit.cover,
+                // We wrap it in a pointer interceptor so tapping the video 
+                // doesn't trigger the hidden webview controls
+                child: AbsorbPointer(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: YoutubePlayer(
+                      controller: _controller,
+                      showVideoProgressIndicator: true,
+                    ),
+                  ),
+                ),
+              ),
             ),
-            const SizedBox(height: 4),
-            Text(
-              title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 12,
+
+            // 2. Right Side Action Buttons
+            Positioned(
+              right: 12,
+              bottom: 40,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  _buildActionIcon(
+                    icon: isLiked ? Icons.thumb_up : Icons.thumb_up_outlined,
+                    label: "1.5 B",
+                    color: isLiked ? Colors.blue : Colors.white,
+                    onTap: () {
+                      setState(() {
+                        isLiked = !isLiked;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 25),
+                  _buildActionIcon(icon: Icons.thumb_down_outlined, label: "Dislike"),
+                  const SizedBox(height: 25),
+                  _buildActionIcon(icon: Icons.comment, label: "10 M"),
+                  const SizedBox(height: 25),
+                  _buildActionIcon(icon: Icons.reply, label: "Share"),
+                  const SizedBox(height: 25),
+                  _buildActionIcon(icon: Icons.more_horiz, label: ""),
+                ],
+              ),
+            ),
+
+            // 3. Bottom Left Channel Info
+            Positioned(
+              left: 12,
+              bottom: 40,
+              right: 80, // Prevent overlapping with right icons
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const CircleAvatar(
+                        radius: 18,
+                        backgroundImage: NetworkImage(
+                          "https://ui-avatars.com/api/?name=Channel&background=random",
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      const Text(
+                        "@BMW Sports",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            textValue = textValue == "Subscribe" 
+                                ? "Subscribed" 
+                                : "Subscribe";
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: textValue == "Subscribe" 
+                              ? Colors.white 
+                              : Colors.grey.withOpacity(0.5),
+                          foregroundColor: Colors.black,
+                          minimumSize: const Size(80, 32),
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                        ),
+                        child: Text(textValue),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    "BMW M4 Compition",
+                    style: TextStyle(color: Colors.white, fontSize: 14),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
             ),
           ],
@@ -70,196 +157,24 @@ class _ShortPlayerScreen1State extends State<ShortPlayerScreen1> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return YoutubePlayerBuilder(
-      player: YoutubePlayer(
-        controller: _controller,
-        showVideoProgressIndicator: false,
+  // Helper widget for the side icons to keep code clean
+  Widget _buildActionIcon({
+    required IconData icon, 
+    required String label, 
+    Color color = Colors.white, 
+    VoidCallback? onTap
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Icon(icon, color: color, size: 32),
+          if (label.isNotEmpty) ...[
+            const SizedBox(height: 5),
+            Text(label, style: const TextStyle(color: Colors.white, fontSize: 12)),
+          ]
+        ],
       ),
-      builder: (context, player) {
-        return Scaffold(
-          backgroundColor: Colors.black,
-          body: Stack(
-            children: [
-
-              /// Video
-              Positioned.fill(
-                child: FittedBox(
-                  fit: BoxFit.cover,
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    child: player,
-                  ),
-                ),
-              ),
-
-              /// Top Bar
-              SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Row(
-                    children: const [
-                      Text(
-                        "Shorts",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Spacer(),
-                      Icon(Icons.search, color: Colors.white),
-                      SizedBox(width: 20),
-                      Icon(Icons.more_vert, color: Colors.white),
-                    ],
-                  ),
-                ),
-              ),
-
-              /// Right Side Buttons
-              Positioned(
-                right: 12,
-                bottom: 100,
-                child: Column(
-                  children: [
-
-                    const CircleAvatar(
-                      radius: 25,
-                      backgroundImage: NetworkImage(
-                        "https://i.pravatar.cc/300",
-                      ),
-                    ),
-
-                    const SizedBox(height: 25),
-
-                    sideButton(
-                      isLiked
-                          ? Icons.thumb_up
-                          : Icons.thumb_up_alt_outlined,
-                      "120K",
-                      onTap: () {
-                        setState(() {
-                          isLiked = !isLiked;
-                        });
-                      },
-                    ),
-
-                    sideButton(
-                      Icons.comment_outlined,
-                      "3.5K",
-                    ),
-
-                    sideButton(
-                      Icons.share_outlined,
-                      "Share",
-                    ),
-
-                    sideButton(
-                      Icons.repeat,
-                      "Remix",
-                    ),
-
-                    sideButton(
-                      Icons.more_horiz,
-                      "",
-                    ),
-                  ],
-                ),
-              ),
-
-              /// Bottom Details
-              Positioned(
-                left: 15,
-                right: 80,
-                bottom: 20,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-
-                    Row(
-                      children: [
-
-                        const Text(
-                          "@ParthPlayz",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                        const SizedBox(width: 10),
-
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: isSubscribed
-                                ? Colors.grey
-                                : Colors.white,
-                            foregroundColor: Colors.black,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              isSubscribed = !isSubscribed;
-                            });
-                          },
-                          child: Text(
-                            isSubscribed
-                                ? "Subscribed"
-                                : "Subscribe",
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    const Text(
-                      "🔥 Spider-Man Brand New Day Official Trailer",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    const SizedBox(height: 6),
-
-                    const Text(
-                      "#spiderman #marvel #shorts",
-                      style: TextStyle(
-                        color: Colors.white70,
-                      ),
-                    ),
-
-                    const SizedBox(height: 8),
-
-                    const Row(
-                      children: [
-                        Icon(
-                          Icons.music_note,
-                          color: Colors.white,
-                          size: 18,
-                        ),
-                        SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            "Original Audio",
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }
