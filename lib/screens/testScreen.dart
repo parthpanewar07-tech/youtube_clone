@@ -1,32 +1,42 @@
 import 'package:flutter/material.dart';
 
-class testScreen extends StatefulWidget {
-  const testScreen({super.key});
+class TestScreen extends StatefulWidget {
+  const TestScreen({Key? key}) : super(key: key);
 
   @override
-  State<testScreen> createState() => _testScreenState();
+  State<TestScreen> createState() => _TestScreenState();
 }
 
-class _testScreenState extends State<testScreen> {
+class _TestScreenState extends State<TestScreen> {
+  //  The State (Variable)
+  String message = "Hello World!";
+
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.sizeOf(context).width;
-    double screenHeight = MediaQuery.sizeOf(context).height;
+    print("all code is getting updated");
     return Scaffold(
+      appBar: AppBar(title: const Text('Stateful Approach')),
       body: Center(
-        child: Container(
-          height: screenHeight * 0.5,
-          width: screenWidth * 0.5,
-          color: const Color.fromARGB(255, 255, 0, 0),
-          child: Column(
-            children: [
-              Text('screen width $screenWidth', style: TextStyle(fontSize: 25)),
-              Text(
-                'screen height $screenHeight',
-                style: TextStyle(fontSize: 25),
-              ),
-            ],
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            //  The View (UI)
+            Text(message, style: const TextStyle(fontSize: 24)),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                //  The Logic (forces the entire build method to run again)
+                setState(() {
+                  if (message == "Hello World!") {
+                    message = "Text Changed!";
+                  } else {
+                    message = "Hello World!";
+                  }
+                });
+              },
+              child: const Text('Change Text'),
+            ),
+          ],
         ),
       ),
     );
