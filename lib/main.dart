@@ -3,6 +3,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:youtube/screens/homeScreen.dart';
 import 'package:youtube/screens/mainNavigationScreen.dart';
 import 'package:youtube/screens/shortPlayerScreen1.dart';
+import 'package:youtube/screens/splashScreen.dart';
 import 'package:youtube/screens/testScreen.dart';
 import 'package:youtube/screens/videoPlayerScreen1.dart';
 import 'package:youtube/screens/videoPlayerScreen2.dart';
@@ -19,8 +20,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
-        '/': (context) => homeScreen(),
-        '/': (context) => MainNavigationScreen(),
+        '/': (context) => SplashScreen(),
+       // '/': (context) => MainNavigationScreen(),
         '/ytVid1': (context) => const TestScreen(),
         '/ytVid2': (context) => const videoPlayerScreen2(),
         '/ytShVid2': (context) => const ShortPlayerScreen1(),
